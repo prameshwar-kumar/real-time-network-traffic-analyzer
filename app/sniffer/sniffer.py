@@ -1,8 +1,5 @@
 from scapy.all import sniff
+from app.analyzer.traffic_analyzer import analyze_packet
 
-def process_packet(packet):
-    print(packet.summary())
-
-print("Starting packet sniffing...")
-
-sniff(prn=process_packet, store=False)
+print("Starting real time Traffic Analyzer\n")
+sniff(prn=analyze_packet, store=False)
