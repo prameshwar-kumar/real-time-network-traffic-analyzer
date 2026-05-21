@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Real-Time Network Analyzer</title>
+</head>
+<body>
+
+<h1>Real-Time Network Traffic Analyzer</h1>
+
+<h2>Packets: <span id="packets">0</span></h2>
+<h2>Bytes: <span id="bytes">0</span></h2>
+
+<h3>TCP: <span id="tcp">0</span></h3>
+<h3>UDP: <span id="udp">0</span></h3>
+<h3>ICMP: <span id="icmp">0</span></h3>
+
+<script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+
+<script>
+const socket = io();
+
+socket.on("update", function(data){
+    document.getElementById("packets").innerText = data.packet_count;
+    document.getElementById("bytes").innerText = data.total_bytes;
+    document.getElementById("tcp").innerText = data.tcp;
+    document.getElementById("udp").innerText = data.udp;
+    document.getElementById("icmp").innerText = data.icmp;
+});
+</script>
+
+</body>
+</html>
