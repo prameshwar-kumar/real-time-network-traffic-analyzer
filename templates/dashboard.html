@@ -16,15 +16,61 @@
 
 <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
 
+<script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<canvas id="trafficChart"></canvas>
+
 <script>
 const socket = io();
 
+let packets = [];
+let bytes = [];
+
+const ctx = document.getElementById("trafficChart");
+
+const chart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: [],
+        datasets: [
+            {
+                label: "Packets",
+                data: [],
+                borderWidth: 2
+            },
+            {
+                label: "Bytes",
+                data: [],
+                borderWidth: 2
+            }
+        ]
+    }
+});
+
 socket.on("update", function(data){
+
     document.getElementById("packets").innerText = data.packet_count;
     document.getElementById("bytes").innerText = data.total_bytes;
+    
     document.getElementById("tcp").innerText = data.tcp;
     document.getElementById("udp").innerText = data.udp;
     document.getElementById("icmp").innerText = data.icmp;
+
+    packets.push(data.packet_count);
+    bytes.push(data.total_bytes);
+
+    if(packets.length > 20){
+        packets.shift();
+        bytes.shift();
+        chart.data.labels.shift();
+    }
+
+    chart.data.labels.push("");
+    chart.data.datasets[0].data = packets;
+    chart.data.datasets[1].data = bytes;
+
+    chart.update();
 });
 </script>
 

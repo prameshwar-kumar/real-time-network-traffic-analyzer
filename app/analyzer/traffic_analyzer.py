@@ -1,4 +1,5 @@
 from scapy.layers.inet import IP, TCP, UDP
+import time
 import app.dashboard.metrics as m
 
 def analyze_packet(packet):
