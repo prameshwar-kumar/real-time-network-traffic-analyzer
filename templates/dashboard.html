@@ -19,6 +19,19 @@
 <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+<h2>Top Source IPs</h2>
+
+<table border="1">
+    <thead>
+        <tr>
+            <th>IP Address</th>
+            <th>Packets</th>
+        </tr>
+    </thead>
+
+    <tbody id="ipTable"></tbody>
+</table>
+
 <canvas id="trafficChart"></canvas>
 
 <script>
@@ -72,6 +85,28 @@ socket.on("update", function(data){
 
     chart.update();
 });
+
+async function loadTopIPs(){
+
+    const response = await fetch("/top_ips");
+    const data = await response.json();
+
+    let html = "";
+
+    data.forEach(row => {
+
+        html += `
+        <tr>
+            <td>${row[0]}</td>
+            <td>${row[1]}</td>
+        </tr>
+        `;
+    });
+
+    document.getElementById("ipTable").innerHTML = html;
+}
+
+setInterval(loadTopIPs, 2000);
 </script>
 
 </body>

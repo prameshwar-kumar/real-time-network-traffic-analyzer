@@ -36,10 +36,9 @@ def snapshot_metrics():
         socketio.sleep(1)
 
 
-@socketio.on("connect")
-def on_connect():
-    socketio.start_background_task(emit_metrics)
-    socketio.start_background_task(snapshot_metrics)
+threading.Thread(target=start_sniffing, daemon=True).start()
+socketio.start_background_task(emit_metrics)
+socketio.start_background_task(snapshot_metrics)
 
 
 # ROUTES
@@ -51,6 +50,17 @@ def dashboard():
 @app.route("/metrics")
 def get_metrics():
     return jsonify(m.metrics)
+
+@app.route("/top_ips")
+def top_ips():
+
+    sorted_ips = sorted(
+        m.top_ips.items(),
+        key=lambda x: x[1],
+        reverse=True
+    )[:10]
+
+    return jsonify(sorted_ips)
 
 
 # RUN
